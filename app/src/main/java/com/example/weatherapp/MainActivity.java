@@ -118,11 +118,9 @@ public class MainActivity extends AppCompatActivity implements WeatherAdapter.We
                 for (int j = 0; j< object.size(); j++){
                     day = object.get(j).getString("dt_txt");
                     JSONObject main = object.get(j).getJSONObject("main");
-                    int min = (int)Double.parseDouble(main.getString("temp_min"));
-                    int max = (int)Double.parseDouble(main.getString("temp_max"));
                     int tempTB = (int)Double.parseDouble(main.getString("temp"));
-                    cenciusMin = min+"ºC";
-                    cenciusMax = max+"ºC";
+                    cenciusMin = main.getString("temp_min") + "ºC";
+                    cenciusMax = main.getString("temp_max") + "ºC";
                     temp = tempTB+"";
                     pressure = "- Pressure: " +  main.getString("pressure");
                     seaLv = main.getString("sea_level");
@@ -132,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements WeatherAdapter.We
                     JSONArray a = object.get(j).getJSONArray("weather");
                     JSONObject ao = a.getJSONObject(0);
                     state = ao.getString("main");
-                    desciption = "- Description: " + ao.getString("description");
+                    desciption = "Description: " + ao.getString("description");
 
                     JSONObject wind = object.get(j).getJSONObject("wind");
                     wind_speed = wind.getString("speed");

@@ -18,7 +18,8 @@
         android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/txtDescription"
-        android:text="* Clear Sky *"
+        android:text="Desctiption: overcast
+                           clouds"
         android:textColor="#000000"
         android:textSize="20dp"
         android:layout_marginTop="90dp"
