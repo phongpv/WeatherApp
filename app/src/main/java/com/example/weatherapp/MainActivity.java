@@ -18,17 +18,23 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements WeatherAdapter.WeatherOnTtemListener{
     RecyclerView recyclerView;
     WeatherAdapter adapter;
     List<Weather> list;
     Weather weather;
-    String  day, cenciusMin, cenciusMax, state, pressure, desciption ,temp, wind_speed, humidity, seaLv, grandLv;
+    String day, cenciusMin, cenciusMax, state, pressure, desciption ,temp, wind_speed, humidity, seaLv, grandLv;
     List<String> mState,mDescription,mTemp,mWind,mHumidity,mSeaLv,mGrandLv;
     List<Integer> mHinh;
+    NumberFormat formatter = new DecimalFormat("#0.00");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +43,12 @@ public class MainActivity extends AppCompatActivity implements WeatherAdapter.We
         createList();
         initView();
         initData();
-        new getData().execute("https://api.openweathermap.org/data/2.5/forecast/?lat=21.0090602&lon=105.8324736&mode=json&units=metric&cnt=7&APPID=f99f7329e28b995c7bfd1a33f191b59b");
+        new getData().execute("https://api.openweathermap.org/data/2.5/forecast/?" +
+                "lat=21.0090602&lon=105.8324736" +
+                "&mode=json" +
+                "&units=metric" +
+                "&cnt=14" +
+                "&APPID=f99f7329e28b995c7bfd1a33f191b59b");
     }
     //create data
     public void initData(){
@@ -106,8 +117,13 @@ public class MainActivity extends AppCompatActivity implements WeatherAdapter.We
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             try {
+                //get day of week
+                Calendar c = Calendar.getInstance();
+                String day = c.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US).toUpperCase();
+                //get value from json
                 JSONObject jsonObject = new JSONObject(s);
                 JSONArray jsonArray = jsonObject.getJSONArray("list");
+                int cnt = Integer.parseInt(jsonObject.getString("cnt"));
                 // create a list jsonobject
                 List<JSONObject> object = new ArrayList<>();
                 for(int i = 0; i< jsonArray.length();i++){
@@ -116,13 +132,12 @@ public class MainActivity extends AppCompatActivity implements WeatherAdapter.We
                 int k = 0;
                 int image = 0;
                 for (int j = 0; j< object.size(); j++){
-                    day = object.get(j).getString("dt_txt");
                     JSONObject main = object.get(j).getJSONObject("main");
                     int tempTB = (int)Double.parseDouble(main.getString("temp"));
-                    cenciusMin = main.getString("temp_min") + "ºC";
-                    cenciusMax = main.getString("temp_max") + "ºC";
+                    cenciusMin = formatter.format(Double.parseDouble(main.getString("temp_min"))) + "ºC";
+                    cenciusMax = formatter.format(Double.parseDouble(main.getString("temp_max"))) + "ºC";
                     temp = tempTB+"";
-                    pressure = "- Pressure: " +  main.getString("pressure");
+                    pressure = "Pressure: " +  main.getString("pressure");
                     seaLv = main.getString("sea_level");
                     grandLv = main.getString("grnd_level");
                     humidity = main.getString("humidity")+"%";
@@ -145,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements WeatherAdapter.We
                     if(state.equalsIgnoreCase("Clear")){
                         image = R.drawable.clear;
                     }
-
                     //add state to list
                     mTemp.add(temp);
                     mWind.add(wind_speed);
@@ -158,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements WeatherAdapter.We
 
                     weather = new Weather(day,cenciusMin, cenciusMax,state,pressure,desciption,image);
                     list.add(weather);
+                    c.set(Calendar.DAY_OF_WEEK,(c.get(Calendar.DAY_OF_WEEK)+1));
+                    day = c.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US).toUpperCase();
                 }
                 adapter.setmList(list);
                 recyclerView.setAdapter(adapter);
