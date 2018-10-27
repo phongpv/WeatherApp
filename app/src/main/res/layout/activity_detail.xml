@@ -47,14 +47,14 @@
             <ImageView
                 android:id="@+id/imgHinh"
                 android:src="@drawable/rain"
-                android:layout_width="150dp"
-                android:layout_height="150dp" />
+                android:layout_width="152dp"
+                android:layout_height="152dp" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="170dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="172dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
